@@ -4,22 +4,14 @@ import time
 import sys
 # By appending the folder of all the GrovePi libraries to the system path here,
 # we are successfully `import grovepi`
-sys.path.append('../../Software/Python/')
-# This append is to support importing the LCD library.
-sys.path.append('../../Software/Python/grove_rgb_lcd')
+sys.path.append('./Python/')
 
-from grove_rgb_lcd import *
 from grovepi import *
 import grovepi
 
 
 ultra_port = 4
-# led_port = 2
 temp_port = 2
-# button_port = 3
-# light_port = 3
-# pinMode(led_port,"OUTPUT")
-# pinMode(button_port, "INPUT")
 
 
 def on_connect(client, userdata, flags, rc):
@@ -28,7 +20,7 @@ def on_connect(client, userdata, flags, rc):
     #subscribe to topics of interest here
     client.subscribe("home/temperature")
     client.subscribe("home/ultrasonic")
-    client.message_callback_add("wutianha/lcd", lcd_callback)
+    # client.message_callback_add("wutianha/lcd", lcd_callback)
 
 #Default message callback. Please use custom callbacks.
 def on_message(client, userdata, msg):
