@@ -34,16 +34,16 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     print("on_message: " + msg.topic + " " + str(msg.payload, "utf-8"))
 
-# def callback_led(client, userdata, message):
-#     print(message.topic)
-#     text = str(message.payload, "utf-8")
-#     if message.topic == "wutianha/led":
-#         if text == "LED_ON":
-#             print("led on received")
-#             digitalWrite(led_port,1)
-#         elif text == "LED_OFF":
-#             print("led off received")
-#             digitalWrite(led_port,0)
+def callback_led(client, userdata, message):
+    print(message.topic)
+    text = str(message.payload, "utf-8")
+    if message.topic == "wutianha/led":
+        if text == "LED_ON":
+            print("led on received")
+            digitalWrite(led_port,1)
+        elif text == "LED_OFF":
+            print("led off received")
+            digitalWrite(led_port,0)
 
 def lcd_callback(client, userdata, message):
     
