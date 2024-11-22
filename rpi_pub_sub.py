@@ -12,12 +12,19 @@ ultra_port = 4
 temp_port = 2
 blue = 0 # specify kind of temp/humidity sensor
 
+# clock variables
+clock = 0
+maxWait = 3
+
+threshold = 100 # temperature threshold
+
 
 def on_connect(client, userdata, flags, rc):
     print("Connected to server (i.e., broker) with result code "+str(rc))
     #subscribe to topics of interest here
     client.subscribe("home/temperature")
     client.subscribe("home/ultrasonic")
+    client.subscribe("home/guest")
 
 #Default message callback. Please use custom callbacks.
 def on_message(client, userdata, msg):
@@ -43,9 +50,16 @@ if __name__ == '__main__':
 
         [t,humidity] = dht(temp_port,blue)
         client.publish("home/temperature",t)
-        # Send light sensor value to sub
-        # temp_val = grovepi.temp(temp_port,'1.2')
-        # client.publish("home/temperature",temp_val)
+
+        if ultra_val < threshold:
+            clock = clock + 1
+            if clock == maxWait:
+                client.publish("home/guest",1) # Guest is outside
+        else:
+            client.publish("home/guest",0) # No one is outside
+            if clock != 0:
+                clock = 0
+
 
         time.sleep(1)
 
