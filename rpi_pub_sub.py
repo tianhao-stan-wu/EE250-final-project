@@ -9,7 +9,8 @@ import grovepi
 
 # define ports here
 ultra_port = 4
-temp_port = 0
+temp_port = 2
+blue = 0 # specify kind of temp/humidity sensor
 
 
 def on_connect(client, userdata, flags, rc):
@@ -40,15 +41,8 @@ if __name__ == '__main__':
         ultra_val = grovepi.ultrasonicRead(ultra_port)
         client.publish("home/ultrasonic", ultra_val)
 
-        a = analogRead(temp_port)
-        if a <= 0:
-            a = a * -1 + 1
-        print(a)
-        # resistance = (float)(1023 - a) * 10000 / a
-        # print(resistance)
-        # t = (float)(1 / (math.log(resistance / 10000) / 4250 + 1 / 298.15) - 273.15)
-        # print(t)
-        # client.publish("home/temperature",t)
+        [t,humidity] = dht(temp_port,blue)
+        client.publish("home/temperature",t)
         # Send light sensor value to sub
         # temp_val = grovepi.temp(temp_port,'1.2')
         # client.publish("home/temperature",temp_val)
