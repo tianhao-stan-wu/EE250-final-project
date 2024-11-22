@@ -14,34 +14,37 @@ import grovepi
 
 
 ultra_port = 4
-led_port = 2
-button_port = 3
+# led_port = 2
+temp_port = 2
+# button_port = 3
+# light_port = 3
 pinMode(led_port,"OUTPUT")
 pinMode(button_port, "INPUT")
+pinMode(light_port,"INPUT")
 
 
 def on_connect(client, userdata, flags, rc):
     print("Connected to server (i.e., broker) with result code "+str(rc))
 
     #subscribe to topics of interest here
-    client.subscribe("wutianha/led")
-    client.subscribe("wutianha/lcd")
+    client.subscribe("home/temperature")
+    client.subscribe("home/ultrasonic")
     client.message_callback_add("wutianha/lcd", lcd_callback)
 
 #Default message callback. Please use custom callbacks.
 def on_message(client, userdata, msg):
     print("on_message: " + msg.topic + " " + str(msg.payload, "utf-8"))
 
-def callback_led(client, userdata, message):
-    print(message.topic)
-    text = str(message.payload, "utf-8")
-    if message.topic == "wutianha/led":
-        if text == "LED_ON":
-            print("led on received")
-            digitalWrite(led_port,1)
-        elif text == "LED_OFF":
-            print("led off received")
-            digitalWrite(led_port,0)
+# def callback_led(client, userdata, message):
+#     print(message.topic)
+#     text = str(message.payload, "utf-8")
+#     if message.topic == "wutianha/led":
+#         if text == "LED_ON":
+#             print("led on received")
+#             digitalWrite(led_port,1)
+#         elif text == "LED_OFF":
+#             print("led off received")
+#             digitalWrite(led_port,0)
 
 def lcd_callback(client, userdata, message):
     
@@ -58,10 +61,13 @@ if __name__ == '__main__':
     client.loop_start()
 
     while True:
-        
+        # Send ultrasonic ranger value to laptop sub
         ultra_val = grovepi.ultrasonicRead(ultra_port)
-        client.publish("wutianha/ultrasonicRanger", ultra_val)
-        if grovepi.digitalRead(button_port):
-            print("pressed")
-            client.publish("wutianha/button", "Button Pressed!")
+        client.publish("home/ultrasonic", ultra_val)
+        # Send light sensor value to sub
+        temp_val = grovepi.temp(temp_port,'1.2')
+        client.publish("home/temperature",temp_val)
+        # if grovepi.digitalRead(button_port):
+        #     print("pressed")
+        #     client.publish("wutianha/button", "Button Pressed!")
         time.sleep(1)
