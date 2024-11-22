@@ -43,11 +43,12 @@ if __name__ == '__main__':
         a = analogRead(temp_port)
         if a <= 0:
             a = a * -1 + 1
-        resistance = (float)(1023 - a) * 10000 / a
-        print(resistance)
-        t = (float)(1 / (math.log(resistance / 10000) / 4250 + 1 / 298.15) - 273.15)
-        print(t)
-        client.publish("home/temperature",t)
+        print(a)
+        # resistance = (float)(1023 - a) * 10000 / a
+        # print(resistance)
+        # t = (float)(1 / (math.log(resistance / 10000) / 4250 + 1 / 298.15) - 273.15)
+        # print(t)
+        # client.publish("home/temperature",t)
         # Send light sensor value to sub
         # temp_val = grovepi.temp(temp_port,'1.2')
         # client.publish("home/temperature",temp_val)
