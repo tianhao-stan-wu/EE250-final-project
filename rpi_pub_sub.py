@@ -42,9 +42,12 @@ if __name__ == '__main__':
         client.publish("home/ultrasonic", ultra_val)
 
         a = analogRead(temp_port)
+        if a < 0:
+            a = 0
         resistance = (float)(1023 - a) * 10000 / a
         print(resistance)
-        t = (float)(1 / (math.log(resistance / 10000) / bValue + 1 / 298.15) - 273.15)
+        t = (float)(1 / (math.log(resistance / 10000) / 4250 + 1 / 298.15) - 273.15)
+        print(t)
         # Send light sensor value to sub
         # temp_val = grovepi.temp(temp_port,'1.2')
         # client.publish("home/temperature",temp_val)
