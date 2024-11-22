@@ -18,9 +18,8 @@ ultra_port = 4
 temp_port = 2
 # button_port = 3
 # light_port = 3
-pinMode(led_port,"OUTPUT")
-pinMode(button_port, "INPUT")
-pinMode(light_port,"INPUT")
+# pinMode(led_port,"OUTPUT")
+# pinMode(button_port, "INPUT")
 
 
 def on_connect(client, userdata, flags, rc):
