@@ -9,7 +9,7 @@ import grovepi
 
 # define ports here
 ultra_port = 4
-temp_port = 2
+temp_port = 0
 
 
 def on_connect(client, userdata, flags, rc):
@@ -20,7 +20,7 @@ def on_connect(client, userdata, flags, rc):
 
 #Default message callback. Please use custom callbacks.
 def on_message(client, userdata, msg):
-    print("on_message: " + msg.topic + " " + str(msg.payload, "utf-8"))
+    # print("on_message: " + msg.topic + " " + str(msg.payload, "utf-8"))
 
 def lcd_callback(client, userdata, message):
     
@@ -48,6 +48,7 @@ if __name__ == '__main__':
         print(resistance)
         t = (float)(1 / (math.log(resistance / 10000) / 4250 + 1 / 298.15) - 273.15)
         print(t)
+        client.publish("home/temperature",t)
         # Send light sensor value to sub
         # temp_val = grovepi.temp(temp_port,'1.2')
         # client.publish("home/temperature",temp_val)
