@@ -41,8 +41,8 @@ if __name__ == '__main__':
         client.publish("home/ultrasonic", ultra_val)
 
         a = analogRead(temp_port)
-        if a < 0:
-            a = a * -1
+        if a <= 0:
+            a = a * -1 + 1
         resistance = (float)(1023 - a) * 10000 / a
         print(resistance)
         t = (float)(1 / (math.log(resistance / 10000) / 4250 + 1 / 298.15) - 273.15)
