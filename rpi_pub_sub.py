@@ -56,8 +56,8 @@ if __name__ == '__main__':
         ultra_val = grovepi.ultrasonicRead(ultra_port)
         client.publish("home/ultrasonic", ultra_val)
         # Send light sensor value to sub
-        temp_val = grovepi.temp(temp_port,'1.2')
-        client.publish("home/temperature",temp_val)
+        # temp_val = grovepi.temp(temp_port,'1.2')
+        # client.publish("home/temperature",temp_val)
         # if grovepi.digitalRead(button_port):
         #     print("pressed")
         #     client.publish("wutianha/button", "Button Pressed!")
