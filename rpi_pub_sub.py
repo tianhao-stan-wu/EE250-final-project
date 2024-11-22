@@ -55,6 +55,10 @@ if __name__ == '__main__':
         # Send ultrasonic ranger value to laptop sub
         ultra_val = grovepi.ultrasonicRead(ultra_port)
         client.publish("home/ultrasonic", ultra_val)
+
+        a = analogRead(temp_port)
+        resistance = (float)(1023 - a) * 10000 / a
+        print(resistance)
         # Send light sensor value to sub
         # temp_val = grovepi.temp(temp_port,'1.2')
         # client.publish("home/temperature",temp_val)
