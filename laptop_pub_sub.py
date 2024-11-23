@@ -28,6 +28,8 @@ def on_connect(client, userdata, flags, rc):
     client.message_callback_add("home/ultrasonic", ranger_callback)
     client.subscribe("home/temperature")
     client.message_callback_add("home/temperature", temperature_callback)
+    client.subscribe("home/guest")
+    client.message_callback_add("home/guest", guest_callback)
 
 
 #Default message callback. Please use custom callbacks.
@@ -45,6 +47,22 @@ def temperature_callback(client, userdata, msg):
     
     value = str(msg.payload, "utf-8")
     write_to_file(msg.topic, value, TEMPERATURE_DATA_FILE)
+
+
+def guest_callback(client, userdata, msg):
+    
+    file_path = "web.txt"
+
+    
+    with open(file_path, "w") as file:
+        file.write("Distance below threshold of 100 cm for 3 seconds!!!")
+
+    # todo: use laptop camera to capture image, save it, do computer vision
+
+    time.sleep(3)
+
+    with open(file_path, "w") as file:
+        file.write("")
 
 
 if __name__ == '__main__':

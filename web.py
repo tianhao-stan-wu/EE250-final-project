@@ -113,6 +113,17 @@ MONITOR_TEMPLATE = """
         nav a:hover {
             text-decoration: underline;
         }
+        .text-block {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 20px auto;
+            width: 60%;
+            background-color: #f9f9f9;
+        }
+        .data-block {
+            margin: 20px auto;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -123,10 +134,46 @@ MONITOR_TEMPLATE = """
     </nav>
     <hr>
     <h1>Monitor Page</h1>
-    <p>This page is under development.</p>
+    
+    <!-- Display the content from web.txt -->
+    <div class="text-block">
+        <p>{{ web_text }}</p>
+    </div>
+    
+    <!-- Display the most recent temperature and distance data -->
+    <div class="data-block">
+        <p><strong>Current Distance:</strong> {{ recent_distance }}</p>
+        <p><strong>Current Temperature:</strong> {{ recent_temperature }}</p>
+    </div>
 </body>
 </html>
 """
+
+def read_recent_data(file_path):
+    """Read the most recent entry from a data file."""
+    if not os.path.exists(file_path):
+        return None
+    try:
+        data = pd.read_csv(file_path, header=None, names=["timestamp", "location", "value"])
+        # Convert timestamp to datetime for proper sorting
+        data["timestamp"] = pd.to_datetime(data["timestamp"], errors="coerce")
+        data = data.dropna().sort_values(by="timestamp", ascending=False)
+        # Return the most recent value
+        return data.iloc[0]["value"] if not data.empty else "No data"
+    except Exception as e:
+        return f"Error reading data: {e}"
+
+
+def read_web_text(file_path):
+    """Read the content of web.txt."""
+    if not os.path.exists(file_path):
+        return "No content available"
+    try:
+        with open(file_path, "r") as file:
+            return file.read()
+    except Exception as e:
+        return f"Error reading file: {e}"
+
 
 def read_data(file_path):
     """Read and parse a data file into a pandas DataFrame."""
@@ -168,8 +215,16 @@ def generate_plot(data, title):
 
 @app.route("/")
 def monitor():
-    """Monitor page (placeholder for now)."""
-    return MONITOR_TEMPLATE
+    """Monitor page displaying text and the most recent values."""
+    web_text = read_web_text("web.txt")
+    recent_distance = read_recent_data(DISTANCE_DATA_FILE)
+    recent_temperature = read_recent_data(TEMPERATURE_DATA_FILE)
+    return render_template_string(
+        MONITOR_TEMPLATE, 
+        web_text=web_text, 
+        recent_distance=recent_distance, 
+        recent_temperature=recent_temperature
+    )
 
 @app.route("/distance")
 def distance_page():
