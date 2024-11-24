@@ -14,6 +14,21 @@ TEMPERATURE_DATA_FILE = "temperature_data.txt"
 from datetime import datetime
 
 
+def delete_file(file_path):
+    """
+    Deletes a file at the given file path.
+    :param file_path: Path to the file to delete.
+    """
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print(f"File {file_path} deleted successfully.")
+        else:
+            print(f"File {file_path} does not exist.")
+    except Exception as e:
+        print(f"Error deleting file {file_path}: {e}")
+
+
 def write_to_file(topic, value, file):
     """
     Function to write data to the file while ensuring it has no more than 10 lines.
@@ -85,7 +100,7 @@ def guest_callback(client, userdata, msg):
 
     
     with open(file_path, "w") as file:
-        file.write("Distance below threshold of 100 cm for 3 seconds!!!")
+        file.write("Distance below threshold of 100 cm for 3 seconds!!! Someone is approaching!")
 
     # todo: use laptop camera to capture image, save it, do computer vision
     # Check if the webcam is opened correctly
@@ -98,7 +113,8 @@ def guest_callback(client, userdata, msg):
 
     if ret:
         # Save the captured image to a file
-        cv2.imwrite('guest_image.jpg', frame)
+        delete_file("./static/guest_image.jpg")
+        cv2.imwrite('static/guest_image.jpg', frame)
         print("Image captured and saved successfully!")
     else:
         print("Error: Could not capture image.")

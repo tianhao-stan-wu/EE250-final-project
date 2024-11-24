@@ -90,7 +90,6 @@ HTML_TEMPLATE = """
 </html>
 """
 
-# HTML template for the monitor page with centered content
 MONITOR_TEMPLATE = """
 <!DOCTYPE html>
 <html>
@@ -124,6 +123,9 @@ MONITOR_TEMPLATE = """
             margin: 20px auto;
             font-size: 18px;
         }
+        .image-block {
+            margin: 20px auto;
+        }
     </style>
 </head>
 <body>
@@ -135,19 +137,25 @@ MONITOR_TEMPLATE = """
     <hr>
     <h1>Monitor Page</h1>
     
-    <!-- Display the content from web.txt -->
-    <div class="text-block">
-        <p>{{ web_text }}</p>
-    </div>
-    
     <!-- Display the most recent temperature and distance data -->
     <div class="data-block">
         <p><strong>Current Distance:</strong> {{ recent_distance }}</p>
         <p><strong>Current Temperature:</strong> {{ recent_temperature }}</p>
     </div>
+    
+    <!-- Display the content from web.txt -->
+    <div class="text-block">
+        <p>{{ web_text }}</p>
+    </div>
+    
+    <!-- Display the guest image -->
+    <div class="image-block">
+        <img src="{{ guest_image_url }}" alt="Guest Image" style="max-width: 100%; height: auto;">
+    </div>
 </body>
 </html>
 """
+
 
 def read_recent_data(file_path):
     """Read the most recent entry from a data file."""
@@ -216,16 +224,19 @@ def generate_plot(data, title):
 
 @app.route("/")
 def monitor():
-    """Monitor page displaying text and the most recent values."""
+    """Monitor page displaying text, the most recent values, and an image."""
     web_text = read_web_text("web.txt")
     recent_distance = read_recent_data(DISTANCE_DATA_FILE)
     recent_temperature = read_recent_data(TEMPERATURE_DATA_FILE)
+    guest_image_url = "/static/guest_image.jpg"
     return render_template_string(
         MONITOR_TEMPLATE, 
         web_text=web_text, 
         recent_distance=recent_distance, 
-        recent_temperature=recent_temperature
+        recent_temperature=recent_temperature, 
+        guest_image_url=guest_image_url
     )
+
 
 @app.route("/distance")
 def distance_page():
