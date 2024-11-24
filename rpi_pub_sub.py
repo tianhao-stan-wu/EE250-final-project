@@ -54,7 +54,8 @@ if __name__ == '__main__':
         if ultra_val < threshold:
             clock = clock + 1
             if clock == maxWait:
-                client.publish("home/guest",1) # Guest is outside
+                client.publish("home/guest") # Guest is outside
+                clock = 0
         else:
             if clock != 0:
                 clock = 0
