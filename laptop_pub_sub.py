@@ -3,12 +3,16 @@ import time
 import requests
 from datetime import datetime
 import os
+import cv2
+
+# Initialize the webcam
+cap = cv2.VideoCapture(0)
 
 DISTANCE_DATA_FILE = "distance_data.txt"
 TEMPERATURE_DATA_FILE = "temperature_data.txt"
 
-
 from datetime import datetime
+
 
 def write_to_file(topic, value, file):
     """
@@ -84,7 +88,26 @@ def guest_callback(client, userdata, msg):
         file.write("Distance below threshold of 100 cm for 3 seconds!!!")
 
     # todo: use laptop camera to capture image, save it, do computer vision
-    
+    # Check if the webcam is opened correctly
+    if not cap.isOpened():
+        print("Error: Could not open webcam.")
+        exit()
+
+    # Capture a frame
+    ret, frame = cap.read()
+
+    if ret:
+        # Save the captured image to a file
+        cv2.imwrite('guest_image.jpg', frame)
+        print("Image captured and saved successfully!")
+    else:
+        print("Error: Could not capture image.")
+
+    # Release the webcam
+    cap.release()
+
+    # Close all OpenCV windows (if any)
+    cv2.destroyAllWindows()
 
     time.sleep(3)
 
