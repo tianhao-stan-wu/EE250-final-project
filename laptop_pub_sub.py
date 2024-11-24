@@ -8,6 +8,13 @@ import cv2
 # Initialize the webcam
 cap = cv2.VideoCapture(0)
 
+# Check if the webcam is opened correctly
+if not cap.isOpened():
+    print("Error: Could not open webcam.")
+    print("Attempting alternative index...")
+    cap = cv2.VideoCapture(1)
+    exit()
+
 DISTANCE_DATA_FILE = "distance_data.txt"
 TEMPERATURE_DATA_FILE = "temperature_data.txt"
 
@@ -103,11 +110,6 @@ def guest_callback(client, userdata, msg):
         file.write("Distance below threshold of 100 cm for 3 seconds!!! Someone is approaching!")
 
     # todo: use laptop camera to capture image, save it, do computer vision
-    # Check if the webcam is opened correctly
-    if not cap.isOpened():
-        print("Error: Could not open webcam.")
-        exit()
-
     # Capture a frame
     ret, frame = cap.read()
 
