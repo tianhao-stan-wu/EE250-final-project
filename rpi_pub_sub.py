@@ -56,7 +56,6 @@ if __name__ == '__main__':
             if clock == maxWait:
                 client.publish("home/guest",1) # Guest is outside
         else:
-            client.publish("home/guest",0) # No one is outside
             if clock != 0:
                 clock = 0
 
