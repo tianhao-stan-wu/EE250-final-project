@@ -2,22 +2,46 @@ import paho.mqtt.client as mqtt
 import time
 import requests
 from datetime import datetime
+import os
 
 DISTANCE_DATA_FILE = "distance_data.txt"
 TEMPERATURE_DATA_FILE = "temperature_data.txt"
 
 
+from datetime import datetime
+
 def write_to_file(topic, value, file):
     """
-    Function to write data to the file
+    Function to write data to the file while ensuring it has no more than 10 lines.
     :param topic: Topic name
     :param value: Value received
+    :param file: File path
     """
-    with open(file, "a") as file:
-        # Get current time
+    try:
+        # Read all lines from the file if it exists
+        if os.path.exists(file):
+            with open(file, "r") as f:
+                lines = f.readlines()
+        else:
+            lines = []
+
+        # If more than 10 lines, remove the first line
+        if len(lines) >= 10:
+            lines = lines[1:]  # Remove the first line
+
+        # Add the new data to the last line
         timestamp = datetime.now().strftime("%H:%M:%S")
-        file.write(f"{timestamp},{topic},{value}\n")
-        print(f"Data stored: {timestamp},{topic},{value}")
+        new_line = f"{timestamp},{topic},{value}\n"
+        lines.append(new_line)
+
+        # Write the updated lines back to the file
+        with open(file, "w") as f:
+            f.writelines(lines)
+
+        print(f"Data stored: {new_line.strip()}")
+
+    except Exception as e:
+        print(f"Error writing to file: {e}")
 
 
 def on_connect(client, userdata, flags, rc):
@@ -40,12 +64,14 @@ def on_message(client, userdata, msg):
 def ranger_callback(client, userdata, msg):
     
     value = str(msg.payload, "utf-8")
+    print(msg.topic, value)
     write_to_file(msg.topic, value, DISTANCE_DATA_FILE)
 
 
 def temperature_callback(client, userdata, msg):
     
     value = str(msg.payload, "utf-8")
+    print(msg.topic, value)
     write_to_file(msg.topic, value, TEMPERATURE_DATA_FILE)
 
 
@@ -58,6 +84,7 @@ def guest_callback(client, userdata, msg):
         file.write("Distance below threshold of 100 cm for 3 seconds!!!")
 
     # todo: use laptop camera to capture image, save it, do computer vision
+    
 
     time.sleep(3)
 

@@ -176,16 +176,17 @@ def read_web_text(file_path):
 
 
 def read_data(file_path):
-    """Read and parse a data file into a pandas DataFrame."""
+    """Read and parse the last 10 rows of a data file into a pandas DataFrame."""
     if not os.path.exists(file_path):
         return pd.DataFrame(columns=["timestamp", "location", "value"])
     
-    # Read the file into a DataFrame
-    data = pd.read_csv(file_path, header=None, names=["timestamp", "location", "value"])
+    # Read only the last 10 rows into a DataFrame
+    data = pd.read_csv(file_path, header=None, names=["timestamp", "location", "value"]).tail(10)
     # Convert timestamp to datetime and value to numeric
     data["timestamp"] = pd.to_datetime(data["timestamp"], errors="coerce")
     data["value"] = pd.to_numeric(data["value"], errors="coerce")
     return data.dropna()  # Remove invalid rows
+
 
 def generate_plot(data, title):
     """Generate a time series plot for the given data."""
