@@ -4,6 +4,13 @@ import requests
 from datetime import datetime
 import os
 import cv2
+from transformers import BlipProcessor, BlipForConditionalGeneration
+from PIL import Image
+from datetime import datetime
+
+# Load the BLIP processor and model
+processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 
 # Initialize the webcam
 cap = cv2.VideoCapture(0)
@@ -17,23 +24,21 @@ if not cap.isOpened():
 
 DISTANCE_DATA_FILE = "distance_data.txt"
 TEMPERATURE_DATA_FILE = "temperature_data.txt"
+image_path = "static/guest_image.jpg"
 
-from datetime import datetime
 
+def describe_facial_expression(image_path):
 
-def delete_file(file_path):
-    """
-    Deletes a file at the given file path.
-    :param file_path: Path to the file to delete.
-    """
-    try:
-        if os.path.exists(file_path):
-            os.remove(file_path)
-            print(f"File {file_path} deleted successfully.")
-        else:
-            print(f"File {file_path} does not exist.")
-    except Exception as e:
-        print(f"Error deleting file {file_path}: {e}")
+    image = Image.open(image_path).convert("RGB")
+
+    # Preprocess the image and prepare inputs for the model
+    inputs = processor(images=image, return_tensors="pt")
+
+    # Generate a caption
+    caption = model.generate(**inputs)
+    description = processor.decode(caption[0], skip_special_tokens=True)
+
+    return description
 
 
 def write_to_file(topic, value, file):
@@ -115,22 +120,16 @@ def guest_callback(client, userdata, msg):
 
     if ret:
         # Save the captured image to a file
-        delete_file("./static/guest_image.jpg")
         cv2.imwrite('static/guest_image.jpg', frame)
         print("Image captured and saved successfully!")
     else:
         print("Error: Could not capture image.")
+        
 
-    # Release the webcam
-    cap.release()
-
-    # Close all OpenCV windows (if any)
-    cv2.destroyAllWindows()
-
-    time.sleep(3)
-
+    # describe the image we captured
+    description = describe_facial_expression(image_path)
     with open(file_path, "w") as file:
-        file.write("")
+        file.write("This is our previous guest:" + description)
 
 
 if __name__ == '__main__':
