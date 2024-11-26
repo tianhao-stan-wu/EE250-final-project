@@ -1,0 +1,10 @@
+15:54:50,home/temperature,22.0
+15:54:52,home/temperature,22.0
+15:54:53,home/temperature,22.0
+15:54:54,home/temperature,22.0
+15:54:56,home/temperature,22.0
+15:54:57,home/temperature,22.0
+15:54:58,home/temperature,22.0
+15:54:59,home/temperature,22.0
+15:55:01,home/temperature,22.0
+15:55:02,home/temperature,22.0

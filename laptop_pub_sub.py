@@ -114,7 +114,6 @@ def guest_callback(client, userdata, msg):
     with open(file_path, "w") as file:
         file.write("Distance below threshold of 100 cm for 3 seconds!!! Someone is approaching!")
 
-    # todo: use laptop camera to capture image, save it, do computer vision
     # Capture a frame
     ret, frame = cap.read()
 
@@ -124,7 +123,7 @@ def guest_callback(client, userdata, msg):
         print("Image captured and saved successfully!")
     else:
         print("Error: Could not capture image.")
-        
+
 
     # describe the image we captured
     description = describe_facial_expression(image_path)
