@@ -2,7 +2,7 @@
 
 ## Team Members
 - Tianhao Wu
-- MJojo Ibalio
+- Jojo Ibalio
 
 ---
 
